@@ -25,30 +25,32 @@ Ever run a complex task in Claude Code and wonder:
 | Feature | What It Does |
 |---------|--------------|
 | **Real-time Cost Tracking** | See exactly how much you're spending, per-token breakdown |
+| **Rate Limit Bars** | 5h and 7d quota bars with reset countdowns, read directly from Claude Code stdin |
 | **Session Analytics** | Tool success rates, error tracking, performance metrics |
 | **Smart Context Alerts** | Get warned before your context window fills up |
 | **Activity Monitoring** | Track tools, agents, and todos in real-time |
-| **Zero Config** | Works out of the box, customize when you want |
+| **One-line Installer** | `curl \| bash` from your terminal — atomic, idempotent, JSON-safe |
 
 ---
 
 ## Live Preview
 
 ```
-[Opus | Pro] █████░░░░░ 45% | my-project git:(main*) | 2 CLAUDE.md | 5h: 25%
-💰 Cost: $0.42 (in: 89k, out: 4.2k, cache: 156k)
-📊 Tools: 47/49 (96%) | avg: 1.1s | top: Read:28, Edit:12
-✓ Read ×28 | ✓ Edit ×12 | ✓ Grep ×7
-◐ Task [Explore]: Analyzing authentication flow (45s)
-▸ Implement OAuth integration (3/7)
+[Opus 4.6 (1M context)] ███░░░░░░░ 27% | 5h █████░░░░░ 50% (35m) | 7d █░░░░░░░░░ 9% (6d2h)
+my-project git:(main*) | 2 CLAUDE.md | ⏱  32m
+💰 Cost: $0.66 (in: 220k, cache: 197k)
+📊 Tools: 95/102 (93%) | avg: 441ms | top: Bash:34, Read:25 | 2 errors
+✓ Bash ×34 | ✓ Read ×25 | ✓ Edit ×14 | ✓ TaskUpdate ×10 | ✗ 2 errors
 ⚠️ Context at 85% — Consider using /compact or starting a new session
 ```
+
+Three percentage bars (context · 5h · 7d) align on row 1; project, git status, and duration sit on row 2 so the bar row never wraps off-screen.
 
 ---
 
 ## Quick Start
 
-**3 commands. That's it.**
+### Option A — Inside Claude Code (3 commands)
 
 ```bash
 # 1. Add the marketplace
@@ -57,21 +59,29 @@ Ever run a complex task in Claude Code and wonder:
 # 2. Install
 /plugin install claude-pulse
 
-# 3. Setup
+# 3. Wire the statusLine
 /claude-pulse:setup
 ```
 
 The pulse starts immediately. No restart required.
 
-### One-line install (terminal)
+### Option B — One-line terminal install
 
-Already have the plugin installed? Wire the statusLine in one shot from your terminal — no need to enter Claude Code:
+Already installed the plugin? Wire the statusLine in one shot from your terminal — no Claude Code session needed:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/hyeongjun-dev/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
 ```
 
-The installer validates your existing `~/.claude/settings.json`, detects `bun` or `node`, prompts before replacing any non-claude-pulse statusLine, and writes atomically. Safe to re-run.
+The installer:
+
+- Validates `~/.claude/settings.json` is valid JSON before any mutation (refuses to touch broken files)
+- Detects `bun` (preferred) or `node`, picks the right entry point
+- Generates a self-resolving `$(ls ...)` command so future plugin upgrades are picked up automatically — no need to re-run after `/plugin update`
+- Detects an existing statusLine and prompts before replacing it
+- Refuses to overwrite without a tty (safe in `curl | bash` flows)
+- Writes atomically via tempfile + `os.replace`, preserving every other key in `settings.json`
+- Idempotent — re-running is a no-op
 
 ---
 
@@ -118,6 +128,19 @@ Track your productivity metrics:
 - Average operation duration
 - Most-used tools ranking
 - Error detection and tracking
+
+### Rate Limit Bars (5h / 7d)
+
+See your plan quotas as colored progress bars next to the context bar:
+
+```
+5h █████░░░░░ 50% (35m) | 7d █░░░░░░░░░ 9% (6d2h)
+```
+
+- Reads `rate_limits.{five_hour,seven_day}` directly from the Claude Code stdin payload — no extra API calls, works on macOS where credentials live in Keychain
+- Falls back to the OAuth usage API only when stdin lacks the field (older Claude Code versions)
+- Day-aware reset countdown: `35m`, `4h10m`, `1d21h`, `6d2h`
+- Color thresholds: green &lt;70%, yellow 70–84%, red ≥85%
 
 ### Smart Context Alerts
 
@@ -219,17 +242,20 @@ Run `/claude-pulse:stats` for a full breakdown:
 
 ## Development
 
+The repository root is a Claude Code marketplace manifest. The actual npm/TypeScript package lives under `plugins/claude-pulse/` — all build commands must run from there.
+
 ```bash
 # Clone
 git clone https://github.com/hyeongjun-dev/claude-pulse
-cd claude-pulse
+cd claude-pulse/plugins/claude-pulse
 
-# Install & Build
+# Install & build
 npm install
-npm run build
+npm run build          # tsc -> dist/
+npm run dev            # tsc --watch
 
-# Test
-echo '{"model":{"display_name":"Opus"},"context_window":{"current_usage":{"input_tokens":45000},"context_window_size":200000}}' | node dist/index.js
+# Smoke test with a fake statusline payload
+echo '{"model":{"display_name":"Opus"},"context_window":{"current_usage":{"input_tokens":45000},"context_window_size":200000},"rate_limits":{"five_hour":{"used_percentage":42,"resets_at":9999999999},"seven_day":{"used_percentage":9,"resets_at":9999999999}}}' | node dist/index.js
 ```
 
 ---
