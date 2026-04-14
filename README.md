@@ -63,6 +63,16 @@ Ever run a complex task in Claude Code and wonder:
 
 The pulse starts immediately. No restart required.
 
+### One-line install (terminal)
+
+Already have the plugin installed? Wire the statusLine in one shot from your terminal — no need to enter Claude Code:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hyeongjun-dev/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
+```
+
+The installer validates your existing `~/.claude/settings.json`, detects `bun` or `node`, prompts before replacing any non-claude-pulse statusLine, and writes atomically. Safe to re-run.
+
 ---
 
 ## Why I Built This
