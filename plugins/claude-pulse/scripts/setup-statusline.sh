@@ -18,7 +18,7 @@ PLUGIN_DIR=$( (ls -td "$PLUGIN_BASE"/*/ 2>/dev/null || true) | head -1 )
 if [ -z "$PLUGIN_DIR" ]; then
   echo "Error: claude-pulse plugin not found under $PLUGIN_BASE" >&2
   echo "Run inside Claude Code first:" >&2
-  echo "  /plugin marketplace add hyeongjun-dev/claude-pulse" >&2
+  echo "  /plugin marketplace add ocean-zhc/claude-pulse" >&2
   echo "  /plugin install claude-pulse" >&2
   exit 1
 fi

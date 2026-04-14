@@ -54,7 +54,7 @@ Three percentage bars (context · 5h · 7d) align on row 1; project, git status,
 
 ```bash
 # 1. Add the marketplace
-/plugin marketplace add hyeongjun-dev/claude-pulse
+/plugin marketplace add ocean-zhc/claude-pulse
 
 # 2. Install
 /plugin install claude-pulse
@@ -70,7 +70,7 @@ The pulse starts immediately. No restart required.
 Already installed the plugin? Wire the statusLine in one shot from your terminal — no Claude Code session needed:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hyeongjun-dev/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ocean-zhc/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
 ```
 
 The installer:
@@ -246,7 +246,7 @@ The repository root is a Claude Code marketplace manifest. The actual npm/TypeSc
 
 ```bash
 # Clone
-git clone https://github.com/hyeongjun-dev/claude-pulse
+git clone https://github.com/ocean-zhc/claude-pulse
 cd claude-pulse/plugins/claude-pulse
 
 # Install & build

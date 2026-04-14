@@ -9,7 +9,7 @@ This command wires claude-pulse into `~/.claude/settings.json` as the active sta
 **Tip — terminal one-liner**: outside of Claude Code you can install in one shot with:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hyeongjun-dev/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ocean-zhc/claude-pulse/main/plugins/claude-pulse/scripts/setup-statusline.sh | bash
 ```
 
 The slash-command flow below does the same thing but runs the bundled installer directly from the locally-installed plugin cache.
@@ -41,7 +41,7 @@ ls -td ~/.claude/plugins/cache/claude-pulse/claude-pulse/*/ 2>/dev/null | head -
 If empty, the plugin is not installed yet. Tell the user to run:
 
 ```
-/plugin marketplace add hyeongjun-dev/claude-pulse
+/plugin marketplace add ocean-zhc/claude-pulse
 /plugin install claude-pulse
 ```
 
@@ -115,6 +115,6 @@ Select a display preset that matches your workflow:
 
 ## Need Help?
 
-- GitHub: https://github.com/hyeongjun-dev/claude-pulse
+- GitHub: https://github.com/ocean-zhc/claude-pulse
 
 Your pulse is ready. Happy coding!

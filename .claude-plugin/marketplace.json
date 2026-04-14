@@ -17,7 +17,7 @@
       },
       "source": "./plugins/claude-pulse",
       "category": "monitoring",
-      "homepage": "https://github.com/hyeongjun-dev/claude-pulse"
+      "homepage": "https://github.com/ocean-zhc/claude-pulse"
     }
   ]
 }

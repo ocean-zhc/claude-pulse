@@ -7,8 +7,8 @@ This project welcomes contributions from everyone. Whether you're fixing a typo,
 ## Quick Links
 
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Issue Tracker](https://github.com/hyeongjun-dev/claude-pulse/issues)
-- [Pull Requests](https://github.com/hyeongjun-dev/claude-pulse/pulls)
+- [Issue Tracker](https://github.com/ocean-zhc/claude-pulse/issues)
+- [Pull Requests](https://github.com/ocean-zhc/claude-pulse/pulls)
 
 ## How Can I Contribute?
 

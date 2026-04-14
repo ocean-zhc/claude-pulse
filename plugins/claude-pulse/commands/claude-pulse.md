@@ -65,4 +65,4 @@ Tool Usage
 - Be specific in prompts to reduce back-and-forth
 
 ---
-GitHub: https://github.com/hyeongjun-dev/claude-pulse
+GitHub: https://github.com/ocean-zhc/claude-pulse
