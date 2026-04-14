@@ -1,4 +1,5 @@
 import { renderSessionLine } from './session-line.js';
+import { renderProjectLine } from './project-line.js';
 import { renderToolsLine } from './tools-line.js';
 import { renderAgentsLine } from './agents-line.js';
 import { renderTodosLine } from './todos-line.js';
@@ -25,10 +26,15 @@ export function render(ctx) {
             lines.push(alertLine);
         }
     }
-    // Session line (model + context + project + git + etc)
+    // Row 1: model + context bar + 5h + 7d (all percentage bars together)
     const sessionLine = renderSessionLine(ctx);
     if (sessionLine) {
         lines.push(sessionLine);
+    }
+    // Row 2: project + git + counts + duration
+    const projectLine = renderProjectLine(ctx);
+    if (projectLine) {
+        lines.push(projectLine);
     }
     // Extended: Cost line
     if (display?.showCost !== false) {

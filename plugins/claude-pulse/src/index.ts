@@ -62,10 +62,30 @@ export async function main(overrides: Partial<MainDeps> = {}): Promise<void> {
       ? await deps.getGitStatus(stdin.cwd)
       : null;
 
-    // Only fetch usage if enabled in config
-    const usageData = config.display.showUsage !== false
-      ? await deps.getUsage()
-      : null;
+    // Prefer rate_limits from stdin (Claude Code v2.x ships them directly).
+    // Fall back to OAuth API (works only when ~/.claude/.credentials.json exists,
+    // i.e. mostly on Linux — macOS stores credentials in Keychain).
+    let usageData = null;
+    if (config.display.showUsage !== false) {
+      const rl = stdin.rate_limits;
+      const fiveRaw = rl?.five_hour?.used_percentage;
+      const sevenRaw = rl?.seven_day?.used_percentage;
+      if (typeof fiveRaw === 'number' || typeof sevenRaw === 'number') {
+        usageData = {
+          planName: null,
+          fiveHour: typeof fiveRaw === 'number' ? Math.round(fiveRaw) : null,
+          sevenDay: typeof sevenRaw === 'number' ? Math.round(sevenRaw) : null,
+          fiveHourResetAt: typeof rl?.five_hour?.resets_at === 'number'
+            ? new Date(rl.five_hour.resets_at * 1000)
+            : null,
+          sevenDayResetAt: typeof rl?.seven_day?.resets_at === 'number'
+            ? new Date(rl.seven_day.resets_at * 1000)
+            : null,
+        };
+      } else {
+        usageData = await deps.getUsage();
+      }
+    }
 
     const sessionDuration = formatSessionDuration(transcript.sessionStart, deps.now);
 
